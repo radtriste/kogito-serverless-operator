@@ -39,3 +39,5 @@ jobs:
     - name: Run tests
       run: |
         make test-e2e
+      env:
+        KIND_CLUSTER: 'kind'

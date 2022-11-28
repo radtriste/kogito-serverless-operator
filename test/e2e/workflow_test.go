@@ -82,15 +82,15 @@ var _ = Describe("kogito-serverless", func() {
 			projectDir, _ := utils.GetProjectDir()
 
 			// operatorImage store the name of the imahe used in the example
-			const operatorImage = "=quay.io/kiegroup/kogito-serverless-operator:v0.0.1"
+			const operatorImage = "quay.io/kiegroup/kogito-serverless-operator:1.3.1"
 
 			By("building the manager(Operator) image")
-			cmd := exec.Command("make", "docker-build", "IMG=quay.io/kiegroup/kogito-serverless-operator:v0.0.1")
+			cmd := exec.Command("make", "container-build", "IMG=quay.io/kiegroup/kogito-serverless-operator:1.3.1")
 			_, err = utils.Run(cmd)
 			ExpectWithOffset(1, err).NotTo(HaveOccurred())
 
 			By("loading the the manager(Operator) image on Kind")
-			err = utils.LoadImageToKindClusterWithName("=quay.io/kiegroup/kogito-serverless-operator:v0.0.1")
+			err = utils.LoadImageToKindClusterWithName("quay.io/kiegroup/kogito-serverless-operator:1.3.1")
 			ExpectWithOffset(1, err).NotTo(HaveOccurred())
 
 			By("installing CRDs")
