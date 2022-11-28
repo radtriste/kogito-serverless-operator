@@ -11,6 +11,9 @@ on:
       - "docsimg/**"
       - ".ci/jenkins/**"
 
+env:
+  GO_VERSION: 1.19
+
 jobs:
   e2e:
     runs-on: ubuntu-latest
@@ -18,27 +21,20 @@ jobs:
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
-
-    # Setup kind cluster
-    - uses: engineerd/setup-kind@v0.5.0
+    
+    - name: Install Go
+      id: go
+      uses: actions/setup-go@v3
       with:
-        wait: 300s
-        version: v0.11.1
-        image: kindest/node:v1.25.3
+        go-version: ${{ env.GO_VERSION }}
+        cache: true
 
-   # Setup Go
-    - uses: actions/setup-go@v2
-      with:
-      go-version: '1.19'
-
-    # Setup required tools
-    - name: Install Operator SDK
-      run: |
-        curl -LO https://github.com/operator-framework/operator-sdk/releases/download/v${{ env.OPERATOR_SDK_VERSION }}/operator-sdk_linux_amd64
-        chmod +x operator-sdk_linux_amd64
-        mv operator-sdk_linux_amd64  /usr/local/bin/operator-sdk
-      env:
-        OPERATOR_SDK_VERSION: 1.25.2
+    - name: Setup KIND cluster
+      uses: engineerd/setup-kind@v0.5.0
+      # with:
+      #   wait: 300s
+      #   version: v0.11.1
+      #   image: kindest/node:v1.25.3
 
     - name: Run tests
       run: |
