@@ -19,10 +19,27 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: start minikube
-      id: minikube
-      uses: medyagh/setup-minikube@master
-      
+    # Setup kind cluster
+    - uses: engineerd/setup-kind@v0.5.0
+      with:
+        wait: 300s
+        version: v0.11.1
+        image: kindest/node:v1.25.3
+
+   # Setup Go
+    - uses: actions/setup-go@v2
+      with:
+      go-version: '1.19'
+
+    # Setup required tools
+    - name: Install Operator SDK
+      run: |
+        curl -LO https://github.com/operator-framework/operator-sdk/releases/download/v${{ env.OPERATOR_SDK_VERSION }}/operator-sdk_linux_amd64
+        chmod +x operator-sdk_linux_amd64
+        mv operator-sdk_linux_amd64  /usr/local/bin/operator-sdk
+      env:
+        OPERATOR_SDK_VERSION: 1.25.2
+
     - name: Run tests
       run: |
         make test-e2e
